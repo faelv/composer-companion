@@ -1,0 +1,208 @@
+{
+	"name": "composer-companion",
+	"displayName": "Composer Companion",
+	"description": "Composer Companion - Scripts, Tasks and Commands",
+	"publisher": "faelv",
+	"version": "0.1.0",
+	"license": "SEE LICENSE IN LICENSE",
+	"icon": "resources/icon.png",
+	"qna": "https://github.com/faelv/composer-companion/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/faelv/composer-companion.git"
+	},
+	"bugs": {
+		"url": "https://github.com/faelv/composer-companion/issues"
+	},
+	"engines": {
+		"vscode": "^1.41.0"
+	},
+	"categories": [
+		"Other",
+		"Programming Languages"
+	],
+	"keywords": [
+		"composer",
+		"php",
+		"packagist",
+		"dependency",
+		"manager"
+	],
+	"main": "./src/extension.js",
+	"activationEvents": [
+		"workspaceContains:**/composer.json",
+		"onCommand:composerCompanion.init",
+		"onCommand:composerCompanion.search",
+		"onCommand:composerCompanion.selfupdate",
+		"onCommand:composerCompanion.clearcache",
+		"onCommand:composerCompanion.diagnose"
+	],
+	"contributes": {
+		"commands": [
+			{
+				"command": "composerCompanion.init",
+				"title": "Composer: init"
+			},
+			{
+				"command": "composerCompanion.search",
+				"title": "Composer: search"
+			},
+			{
+				"command": "composerCompanion.clearcache",
+				"title": "Composer: clear-cache"
+			},
+			{
+				"command": "composerCompanion.diagnose",
+				"title": "Composer: diagnose"
+			},
+			{
+				"command": "composerCompanion.selfupdate",
+				"title": "Composer: self-update"
+			},
+			{
+				"command": "composerCompanion.open",
+				"title": "Composer: Open composer.json",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.install",
+				"title": "Composer: install, i",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.update",
+				"title": "Composer: update, upgrade, u",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.dumpautoload",
+				"title": "Composer: dump-autoload",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.remove",
+				"title": "Composer: remove",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.require",
+				"title": "Composer: require",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.outdated",
+				"title": "Composer: outdated",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.show",
+				"title": "Composer: show",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.status",
+				"title": "Composer: status",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.validate",
+				"title": "Composer: validate",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.exec",
+				"title": "Composer: exec",
+				"enablement": "composerCompanion.active"
+			},
+			{
+				"command": "composerCompanion.run",
+				"title": "Composer: run",
+				"enablement": "composerCompanion.active",
+				"icon": {
+					"dark": "resources/dark/run.svg",
+					"light": "resources/light/run.svg"
+				}
+			}
+		],
+		"configuration": [
+			{
+				"title": "Composer Companion",
+				"properties": {
+					"composerCompanion.enabled": {
+						"type": "boolean",
+						"default": true,
+						"description": "If Composer Companion is enabled or not",
+						"scope": "resource"
+					},
+					"composerCompanion.executablePath": {
+						"type": [
+							"string",
+							"null"
+						],
+						"default": null,
+						"description": "Path to the composer executable",
+						"scope": "window"
+					},
+					"composerCompanion.showScriptsInExplorer": {
+						"type": "boolean",
+						"default": true,
+						"description": "If Composer Companion should add a scripts view to the Explorer container",
+						"scope": "application"
+					}
+				}
+			}
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "composerScriptsView",
+					"name": "Composer Scripts",
+					"when": "composerCompanion.showScriptsInExplorer"
+				}
+			]
+		},
+		"menus": {
+			"view/item/context": [
+				{
+					"command": "composerCompanion.run",
+					"group": "inline",
+					"when": "view == composerScriptsView && viewItem == ComposerScriptsTreeScript"
+				}
+			]
+		},
+		"taskDefinitions": [
+			{
+				"type": "composer",
+				"required": [
+					"script"
+				],
+				"properties": {
+					"script": {
+						"type": "string",
+						"description": "Name of a composer script"
+					}
+				}
+			}
+		],
+		"jsonValidation": [
+			{
+				"fileMatch": "composer.json",
+				"url": "http://json.schemastore.org/composer"
+			}
+		]
+	},
+	"scripts": {
+		"test": "node ./test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^12.11.7",
+		"@types/vscode": "^1.41.0",
+		"eslint": "^6.6.0",
+		"glob": "^7.1.5",
+		"mocha": "^6.2.2",
+		"typescript": "^3.6.4",
+		"vscode-test": "^1.2.2"
+	}
+}
