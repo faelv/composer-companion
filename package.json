@@ -3,7 +3,7 @@
 	"displayName": "Composer Companion",
 	"description": "Composer Companion - Scripts, Tasks and Commands",
 	"publisher": "faelv",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"license": "SEE LICENSE IN LICENSE",
 	"icon": "resources/icon.png",
 	"qna": "https://github.com/faelv/composer-companion/issues",
