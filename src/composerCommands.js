@@ -4,11 +4,11 @@ const cp = require('child_process');
 const strings = require('./composerStrings');
 const { ComposerOutput } = require('./composerOutput');
 const { ComposerSettings } = require('./composerSettings');
-const { ComposerTaskProvider, ComposerTaskDefinition } = require('./composerTaskProvider');
+const { ComposerTaskProvider, ComposerTaskDefinition, ComposerBaseTask } = require('./composerTaskProvider');
 const { ComposerScriptsTreeScript } = require('./composerScriptsTreeDataProvider');
 const { ComposerWorkspaceFolders, ComposerWorkspaceFolderScripts } = require('./composerWorkspaceFolders');
 
-class ComposerCommandTask extends vscode.Task {
+class ComposerCommandTask extends ComposerBaseTask {
 
   /**
    * @param {string} command
@@ -23,7 +23,7 @@ class ComposerCommandTask extends vscode.Task {
       shellExec = new vscode.ShellExecution(
         {
           value: ComposerSettings.getInstance().getExecutablePath(scope.uri),
-          quoting: vscode.ShellQuoting.Strong
+          quoting: vscode.ShellQuoting.Weak
         },
         [
           command,
@@ -31,12 +31,19 @@ class ComposerCommandTask extends vscode.Task {
           '-d',
           {value: scope.uri.fsPath, quoting: vscode.ShellQuoting.Strong}
         ],
-        {cwd: scope.uri.fsPath}
+        ComposerBaseTask.getShellOptions(scope.uri.fsPath)
       )
     } else {
       shellExec = new vscode.ShellExecution(
-        {value: ComposerSettings.getInstance().getExecutablePath(), quoting: vscode.ShellQuoting.Strong},
-        [command, ...args]
+        {
+          value: ComposerSettings.getInstance().getExecutablePath(),
+          quoting: vscode.ShellQuoting.Weak
+        },
+        [
+          command,
+          ...args
+        ],
+        ComposerBaseTask.getShellOptions()
       )
     }
 
@@ -137,8 +144,8 @@ class ComposerCommands extends vscode.Disposable {
 
     for (const folder of workspaceFolders.folders) {
       items.push({
-        label: path.basename(folder.folderUri.path),
-        description: folder.folderUri.path,
+        label: path.basename(folder.folderUri.fsPath),
+        description: folder.folderUri.fsPath,
         folder
       })
     }
@@ -346,7 +353,7 @@ class ComposerCommands extends vscode.Disposable {
       for (const task of tasks) {
         items.push({
           label: task.script,
-          description: path.basename(task.folderUri.path),
+          description: path.basename(task.folderUri.fsPath),
           task
         })
       }
@@ -368,7 +375,7 @@ class ComposerCommands extends vscode.Disposable {
     }
 
     if (taskFound) {
-      this.output.appendLine(`${strings.COMMANDS}: [run] "${taskFound.script}" (${path.basename(taskFound.folderUri.path)})`)
+      this.output.appendLine(`${strings.COMMANDS}: [run] "${taskFound.script}" (${path.basename(taskFound.folderUri.fsPath)})`)
       return vscode.tasks.executeTask(taskFound)
     }
   }
@@ -584,11 +591,11 @@ class ComposerCommands extends vscode.Disposable {
       ComposerTaskDefinition.TASK_TYPE,
       new vscode.ShellExecution(
         {
-          value: path.join(pickedFolder.folderUri.path, 'vendor', 'bin', selected),
+          value: path.join(pickedFolder.folderUri.fsPath, 'vendor', 'bin', selected),
           quoting: vscode.ShellQuoting.Strong
         },
         [args],
-        {cwd: pickedFolder.folderUri.fsPath}
+        ComposerBaseTask.getShellOptions(pickedFolder.folderUri.fsPath)
       )
     )
 

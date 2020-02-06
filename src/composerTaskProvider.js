@@ -28,7 +28,31 @@ class ComposerTaskDefinition {
   }
 }
 
-class ComposerTask extends vscode.Task {
+class ComposerBaseTask extends vscode.Task {
+
+  /**
+   * @param {string | undefined} cwd
+   * @returns {vscode.ShellExecutionOptions | undefined}
+   */
+  static getShellOptions(cwd = undefined) {
+    let opts
+    if (process.platform === 'win32') {
+      opts = {
+        executable: 'cmd.exe',
+        shellArgs: ['/d', '/c']
+      }
+      if (cwd) {
+        opts = {...opts, cwd}
+      }
+    } else if (cwd) {
+      opts = {cwd}
+    }
+    return opts
+  }
+
+}
+
+class ComposerTask extends ComposerBaseTask {
 
   /** @type {vscode.Uri} */
   folderUri
@@ -47,14 +71,14 @@ class ComposerTask extends vscode.Task {
       script,
       ComposerTaskDefinition.TASK_TYPE,
       new vscode.ShellExecution(
-        {value: executable, quoting: vscode.ShellQuoting.Strong},
+        {value: executable, quoting: vscode.ShellQuoting.Weak},
         [
           'run',
-          {value: script, quoting: vscode.ShellQuoting.Strong},
+          script,
           '-d',
-          {value: folderUri.fsPath, quoting: vscode.ShellQuoting.Strong}
+          folderUri.fsPath
         ],
-        {cwd: folderUri.fsPath}
+        ComposerBaseTask.getShellOptions(folderUri.fsPath)
       )
     )
 
@@ -136,9 +160,9 @@ class ComposerTaskProvider extends vscode.Disposable {
       cp.exec(`"${this.executablePath}" --quiet`, (error) => {
         if (error) {
           vscode.window.showErrorMessage(`${strings.EXT_NAME}: ${strings.EXE_PATH_INVALID_MSG}`)
-          this.output.appendLine(`${strings.SETTINGS} (${strings.EXE_PATH}): [${strings.INVALID}] "${this.executablePath}"`)
+          this.output.appendLine(`${strings.SETTINGS} (${strings.EXE_PATH}): [${strings.INVALID}] ${this.executablePath}`)
         } else {
-          this.output.appendLine(`${strings.SETTINGS} (${strings.EXE_PATH}): [${strings.OK}] "${this.executablePath}"`)
+          this.output.appendLine(`${strings.SETTINGS} (${strings.EXE_PATH}): [${strings.OK}] ${this.executablePath}`)
         }
         resolve(error === null)
       })
@@ -230,5 +254,6 @@ class ComposerTaskProvider extends vscode.Disposable {
 module.exports = {
   ComposerTaskProvider,
   ComposerTaskDefinition,
+  ComposerBaseTask,
   ComposerTask
 }

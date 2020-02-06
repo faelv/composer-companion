@@ -146,7 +146,6 @@ class ComposerScriptsTreeDataProvider extends vscode.Disposable {
     this.workspaceFolders = ComposerWorkspaceFolders.getInstance()
 
     this.updateContext()
-    //this.registerDisp = vscode.window.registerTreeDataProvider(ComposerScriptsTreeDataProvider.VIEW_ID, this)
     this.registerDisp = vscode.window.createTreeView(ComposerScriptsTreeDataProvider.VIEW_ID, {
       treeDataProvider: this,
       showCollapseAll: true,
@@ -190,7 +189,7 @@ class ComposerScriptsTreeDataProvider extends vscode.Disposable {
 
       this.output.debugAppendLine(
         `${strings.TREE_PROVIDER}: [${strings.UPDATE}] ` +
-        `"${item ? item.label ? item.label : item.folder ? path.basename(item.folder.folderUri.path) : 'root' : 'all'}"`
+        `"${item ? item.label ? item.label : item.folder ? path.basename(item.folder.folderUri.fsPath) : 'root' : 'all'}"`
       )
     }
   }

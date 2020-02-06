@@ -50,7 +50,7 @@ class ComposerWorkspaceFolderScripts extends vscode.Disposable {
     this.wsFolder = wsFolder
 
     this.composerFileUri = this.wsFolder.uri.with({
-      path: path.join(this.wsFolder.uri.path, ComposerWorkspaceFolderScripts.COMPOSER_FILE)
+      path: path.join(this.wsFolder.uri.fsPath, ComposerWorkspaceFolderScripts.COMPOSER_FILE)
     })
     this.composerFilePath = this.composerFileUri.fsPath
     this.composerFileWatcher = vscode.workspace.createFileSystemWatcher(this.composerFilePath)
@@ -72,7 +72,7 @@ class ComposerWorkspaceFolderScripts extends vscode.Disposable {
 
     this.settings = ComposerSettings.getInstance()
 
-    this.settings.addOnChangeListener(`wsScripts:${wsFolder.uri.path}`, (affects) => {
+    this.settings.addOnChangeListener(`wsScripts:${wsFolder.uri.fsPath}`, (affects) => {
       if (affects(ComposerSettings.SECTION_ENABLED, this.wsFolder.uri)) {
         this.stale = true
       }
