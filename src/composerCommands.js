@@ -640,8 +640,8 @@ class ComposerCommands extends vscode.Disposable {
       ignoreFocusOut: true,
       prompt: strings.EXEC_ARGS_PROMPT
     })
-    if (!args) { return }
-    args = args.trim()
+    if (typeof args !== 'string') { return }
+    args = args.trim().replace(/ {2,}/g, ' ').split(' ')
 
     const task = new vscode.Task(
       {type: ComposerTaskDefinition.TASK_TYPE},
@@ -653,7 +653,9 @@ class ComposerCommands extends vscode.Disposable {
           value: path.join(pickedFolder.folderUri.fsPath, 'vendor', 'bin', selected),
           quoting: vscode.ShellQuoting.Strong
         },
-        [args],
+        [
+          ...args
+        ],
         ComposerBaseTask.getShellOptions(pickedFolder.folderUri.fsPath)
       )
     )
