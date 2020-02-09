@@ -642,6 +642,9 @@ class ComposerCommands extends vscode.Disposable {
     })
     if (typeof args !== 'string') { return }
     args = args.match(/('.*?'|".*?"|\S+)/g)
+    if (!Array.isArray(args)) {
+      args = []
+    }
 
     const task = new vscode.Task(
       {type: ComposerTaskDefinition.TASK_TYPE},
