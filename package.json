@@ -90,6 +90,11 @@
 				"enablement": "composerCompanion.active"
 			},
 			{
+				"command": "composerCompanion.browse",
+				"title": "Composer: browse, home",
+				"enablement": "composerCompanion.active"
+			},
+			{
 				"command": "composerCompanion.require",
 				"title": "Composer: require",
 				"enablement": "composerCompanion.active"

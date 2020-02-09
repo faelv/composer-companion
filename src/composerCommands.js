@@ -125,6 +125,7 @@ class ComposerCommands extends vscode.Disposable {
     add(vscode.commands.registerCommand('composerCompanion.diagnose', this.commandDiagnose, this))
     add(vscode.commands.registerCommand('composerCompanion.exec', this.commandExec, this))
     add(vscode.commands.registerCommand('composerCompanion.checkplatformreqs', this.commandCheckPlatformReqs, this))
+    add(vscode.commands.registerCommand('composerCompanion.browse', this.commandBrowse, this))
   }
 
   unregister() {
@@ -464,6 +465,17 @@ class ComposerCommands extends vscode.Disposable {
 
     const args = await this.pickAdditionalArgs(['update'], info.dev ? ['--dev'] : [])
     return ComposerCommandTask.execute('remove', pickedFolder.wsFolder, [...packages, ...args])
+  }
+
+  async commandBrowse() {
+    const pickedFolder = await this.pickWorkspaceFolder()
+    if (!pickedFolder) { return }
+
+    const selected = await this.pickSinglePackage(pickedFolder, strings.BROWSE_PROMPT)
+    if (!selected) { return }
+
+    const args = await this.pickAdditionalArgs(['browse'])
+    return ComposerCommandTask.execute('browse', pickedFolder.wsFolder, [selected, ...args])
   }
 
   async commandRequire() {

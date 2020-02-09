@@ -30,6 +30,7 @@ class ComposerFlags {
     this.set("--classmap-authoritative", "Autoload classes from the classmap only", ['require', 'update', 'install', 'remove', 'dump-autoload'])
     this.set("--direct", "Shows only packages that are directly required by the root package", ['outdated'])
     this.set("--dry-run", "Simulate the command without actually doing anything", ['update', 'install'])
+    this.set("--homepage", "Open the homepage instead of the repository URL", ['browse'])
     this.set("--ignore-platform-reqs", "Ignore php, hhvm, lib-* and ext-* requirements", ['require', 'update', 'install', 'remove'])
     this.set("--lock", "Only updates the lock file hash", ['update'])
     this.set("--minor-only", "Show only packages that have minor SemVer-compatible updates", ['outdated'])
@@ -60,6 +61,7 @@ class ComposerFlags {
     this.set("--root-reqs", "Restricts the update to your first degree dependencies", ['update'])
     this.set("--self", "List the root package info", ['show'])
     this.set("--set-channel-only", "Only store the channel as the default one and then exit", ['self-update'])
+    this.set("--show", "Only show the homepage or repository URL", ['browse'])
     this.set("--snapshot", "Force an update to the snapshot channel", ['self-update'])
     this.set("--sort-packages", "Keep packages sorted in composer.json", ['require'])
     this.set("--stable", "Force an update to the stable channel", ['self-update'])
@@ -159,6 +161,7 @@ module.exports = {
   SEARCH_PROMPT: 'Type your search...',
   UPDATE_PROMPT: 'Optionally select packages to update (or use --interactive) or <Esc> to cancel',
   REMOVE_PROMPT: 'Select packages to remove or <Esc> to cancel',
+  BROWSE_PROMPT: 'Select a package or <Esc> to cancel',
   SHOW_PROMPT: 'Optionally select a package to show details or <Esc> to show all',
   SELFUPDATE_PROMPT: 'Optionally specify a version or <Esc> to use latest',
   EXEC_BIN_PROMPT: 'Select a binary to execute or <Esc> to cancel',
