@@ -126,6 +126,7 @@ class ComposerCommands extends vscode.Disposable {
     add(vscode.commands.registerCommand('composerCompanion.exec', this.commandExec, this))
     add(vscode.commands.registerCommand('composerCompanion.checkplatformreqs', this.commandCheckPlatformReqs, this))
     add(vscode.commands.registerCommand('composerCompanion.browse', this.commandBrowse, this))
+    add(vscode.commands.registerCommand('composerCompanion.depends', this.commandDepends, this))
   }
 
   unregister() {
@@ -565,6 +566,43 @@ class ComposerCommands extends vscode.Disposable {
     const args = await this.pickAdditionalArgs(['validate'])
 
     return ComposerCommandTask.execute('validate', pickedFolder.wsFolder, [...args])
+  }
+
+  async commandDepends() {
+    const pickedFolder = await this.pickWorkspaceFolder()
+    if (!pickedFolder) { return }
+
+    const executablePath = ComposerSettings.getInstance().getExecutablePath(pickedFolder.folderUri)
+    const cmd = `"${executablePath}" show -d "${pickedFolder.folderUri.fsPath}"`
+    const out = await vscode.window.withProgress(
+      {location: vscode.ProgressLocation.Window, title: strings.FETCHING_PACKAGES},
+      () => {
+        return new Promise((resolve) => {
+          cp.exec(cmd, (error, stdout) => {
+            resolve(error ? '': stdout)
+          })
+        })
+      }
+    )
+
+    const items = Array.from(out.matchAll(/^(\S+)\s+(\S+(?:\s[A-z0-9]+|))(?: +(.*))$/gm)).map((val) => {
+      return {label: val[1], description: val[2]}
+    })
+    if (!items || !items.length) {
+      vscode.window.showInformationMessage(`${strings.EXT_NAME}: ${strings.NO_PACKAGES_MSG} "${pickedFolder.wsFolder.name}"`)
+      this.output.appendLine(`${strings.COMMANDS}: ${strings.NO_PACKAGES_MSG} "${pickedFolder.wsFolder.name}"`)
+      return
+    }
+
+    const selected = await vscode.window.showQuickPick(items, {
+      canPickMany: false,
+      ignoreFocusOut: true,
+      placeHolder: strings.DEPENDS_PROMPT
+    })
+    if (!selected) { return }
+
+    const args = await this.pickAdditionalArgs(['depends'])
+    return ComposerCommandTask.execute('depends', pickedFolder.wsFolder, [selected.label, ...args])
   }
 
   async commandExec() {

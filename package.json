@@ -125,6 +125,11 @@
 				"enablement": "composerCompanion.active"
 			},
 			{
+				"command": "composerCompanion.depends",
+				"title": "Composer: depends, why",
+				"enablement": "composerCompanion.active"
+			},
+			{
 				"command": "composerCompanion.run",
 				"title": "Composer: run",
 				"enablement": "composerCompanion.active",

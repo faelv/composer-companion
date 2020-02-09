@@ -57,6 +57,7 @@ class ComposerFlags {
     this.set("--prefer-source", "Install packages from source when available", ['require', 'update', 'install'])
     this.set("--prefer-stable", "Prefer stable versions of dependencies", ['require', 'update'])
     this.set("--preview", "Force an update to the preview channel", ['self-update'])
+    this.set("--recursive", "Recursively resolves up to the root package", ['depends', 'prohibits'])
     this.set("--rollback", "Revert to an older installation of composer", ['self-update'])
     this.set("--root-reqs", "Restricts the update to your first degree dependencies", ['update'])
     this.set("--self", "List the root package info", ['show'])
@@ -66,6 +67,7 @@ class ComposerFlags {
     this.set("--sort-packages", "Keep packages sorted in composer.json", ['require'])
     this.set("--stable", "Force an update to the stable channel", ['self-update'])
     this.set("--tree", "List the dependencies as a tree", ['show'])
+    this.set("--tree:depends", "Prints the results as a nested tree, implies --recursive", ['depends', 'prohibits'])
     this.set("--update-keys", "Prompt user for a key update", ['self-update'])
     this.set("--update-no-dev", "Run the dependency update with the --no-dev option", ['require', 'remove'])
     this.set("--update-with-all-dependencies", "Also update dependencies of the newly required packages, including root requirements", ['require'])
@@ -162,6 +164,7 @@ module.exports = {
   UPDATE_PROMPT: 'Optionally select packages to update (or use --interactive) or <Esc> to cancel',
   REMOVE_PROMPT: 'Select packages to remove or <Esc> to cancel',
   BROWSE_PROMPT: 'Select a package or <Esc> to cancel',
+  DEPENDS_PROMPT: 'Select a package or <Esc> to cancel',
   SHOW_PROMPT: 'Optionally select a package to show details or <Esc> to show all',
   SELFUPDATE_PROMPT: 'Optionally specify a version or <Esc> to use latest',
   EXEC_BIN_PROMPT: 'Select a binary to execute or <Esc> to cancel',
@@ -172,8 +175,10 @@ module.exports = {
   NO_WORKSPACE_MSG: 'No workspace, open a folder or workspace first',
   NO_COMPOSER_IN_FOLDER_MSG: 'No composer.json in workspace folder',
   NO_BINARIES_MSG: 'No binaries for workspace folder',
+  NO_PACKAGES_MSG: 'No packages for workspace folder',
   FOLDER_DISABLED_MSG: 'Disabled for',
   FETCHING_BINARIES: 'Fetching binaries',
+  FETCHING_PACKAGES: 'Fetching packages',
   COMPOSER_OVERWRITE: 'You will overwrite this folder\'s composer.json. Continue?',
 
   flags: new ComposerFlags()

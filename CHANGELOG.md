@@ -5,6 +5,7 @@ All changes to the **Composer Companion** extension will be documented in this f
 ## [Unreleased]
 _Upcoming changes:_
 #### Added
+- New command: _depends, why_
 - New command: _browse, home_
 - New command: _check-platform-reqs_
 
