@@ -40,6 +40,7 @@ class ComposerFlags {
     this.set("--no-check-lock", "Do not check if lock file is up to date", ['validate'])
     this.set("--no-check-publish", "Do not check for publish errors", ['validate'])
     this.set("--no-dev", "Disables autoload-dev rules", ['dump-autoload'])
+    this.set("--no-dev:check-platform-reqs", "Disables checking of require-dev packages requirements", ['check-platform-reqs'])
     this.set("--no-progress", "Removes the progress display", ['require', 'update', 'install', 'remove', 'self-update'])
     this.set("--no-scripts", "Skips execution of scripts defined in composer.json", ['require', 'update', 'install', 'remove', 'dump-autoload'])
     this.set("--no-suggest", "Skips suggested packages in the output", ['require', 'update', 'install'])

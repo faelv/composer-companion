@@ -124,6 +124,7 @@ class ComposerCommands extends vscode.Disposable {
     add(vscode.commands.registerCommand('composerCompanion.dumpautoload', this.commandDumpAutoload, this))
     add(vscode.commands.registerCommand('composerCompanion.diagnose', this.commandDiagnose, this))
     add(vscode.commands.registerCommand('composerCompanion.exec', this.commandExec, this))
+    add(vscode.commands.registerCommand('composerCompanion.checkplatformreqs', this.commandCheckPlatformReqs, this))
   }
 
   unregister() {
@@ -435,6 +436,14 @@ class ComposerCommands extends vscode.Disposable {
 
     const args = await this.pickAdditionalArgs(['update'], info.dev ? ['--dev'] : ['--no-dev'])
     return ComposerCommandTask.execute('update', pickedFolder.wsFolder, [...packages, ...args])
+  }
+
+  async commandCheckPlatformReqs() {
+    const pickedFolder = await this.pickWorkspaceFolder()
+    if (!pickedFolder) { return }
+
+    const args = await this.pickAdditionalArgs(['check-platform-reqs'])
+    return ComposerCommandTask.execute('check-platform-reqs', pickedFolder.wsFolder, args)
   }
 
   async commandDumpAutoload() {

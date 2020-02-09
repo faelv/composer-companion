@@ -75,6 +75,11 @@
 				"enablement": "composerCompanion.active"
 			},
 			{
+				"command": "composerCompanion.checkplatformreqs",
+				"title": "Composer: check-platform-reqs",
+				"enablement": "composerCompanion.active"
+			},
+			{
 				"command": "composerCompanion.dumpautoload",
 				"title": "Composer: dump-autoload",
 				"enablement": "composerCompanion.active"

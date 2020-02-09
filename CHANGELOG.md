@@ -4,7 +4,8 @@ All changes to the **Composer Companion** extension will be documented in this f
 
 ## [Unreleased]
 _Upcoming changes:_
-#### _(none)_
+#### Added
+- New command: _check-platform-reqs_
 
 ## [0.1.1]
 _Released on 2020-02-06, includes only bug fixes_:
