@@ -150,7 +150,9 @@ class ComposerCommands extends vscode.Disposable {
     if (showNew) {
       items.push({
         label: strings.NEW_FOLDER,
-        folder: true
+        folder: true,
+        enabled: true,
+        composerFileExists: false
       })
     }
 
