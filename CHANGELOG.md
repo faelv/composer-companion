@@ -12,6 +12,7 @@ _Upcoming changes:_
 #### Fixed
 - Argument parsing in exec command
 #### Changed
+- Init command now displays a progress indicator
 - Init command now allows to select a new folder
 - Search, self-update and clear-cache commands no longer require a open workspace
 

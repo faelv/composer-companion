@@ -187,6 +187,7 @@ module.exports = {
   FETCHING_BINARIES: 'Fetching binaries',
   FETCHING_PACKAGES: 'Fetching packages',
   CREATING_PROJECT: 'Creating project, please wait',
+  INITING_PROJECT: 'Initializing package (check the terminal)...',
   OPEN_FOLDER_BTN: 'Create into this folder',
   COMPOSER_OVERWRITE: 'You will overwrite this folder\'s composer.json. Continue?',
 

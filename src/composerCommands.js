@@ -61,6 +61,37 @@ class ComposerCommandTask extends ComposerBaseTask {
   }
 
   /**
+   * @param {string} title
+   * @param {(e: vscode.TaskEndEvent) => any | undefined} onEnd
+   * @returns {vscode.Thenable<TaskExecution>}
+   */
+  executeWithProgress(title, onEnd = undefined) {
+    let resolveTask
+    const taskDisp = vscode.tasks.onDidEndTask((event) => {
+      if (
+        event.execution.task.name === this.name &&
+        event.execution.task.definition.type === this.definition.type
+      ) {
+        taskDisp.dispose()
+        resolveTask()
+        if (typeof onEnd === 'function') {
+          onEnd(event)
+        }
+      }
+    })
+
+    return vscode.window.withProgress(
+      {location: vscode.ProgressLocation.Window, title},
+      () => {
+        return new Promise((resolve) => {
+          const tExec = this.execute()
+          resolveTask = () => resolve(tExec)
+        })
+      }
+    )
+  }
+
+  /**
    * @param {string} command
    * @param {vscode.WorkspaceFolder | vscode.TaskScope} scope
    * @param {string[]} args
@@ -439,17 +470,8 @@ class ComposerCommands extends vscode.Disposable {
       if (!pickedFolder || !pickedFolder.length) { return }
       pickedFolder = pickedFolder[0]
 
-      const taskDisp = vscode.tasks.onDidEndTask((event) => {
-        if (
-          event.execution.task.name === 'init' &&
-          event.execution.task.definition.type === ComposerTaskDefinition.TASK_TYPE
-        ) {
-          taskDisp.dispose()
-          this.addWorkspaceFolder(pickedFolder)
-        }
-      })
-
-      return ComposerCommandTask.execute('init', vscode.TaskScope.Workspace, ['-d', pickedFolder.fsPath], true)
+      const task = new ComposerCommandTask('init', vscode.TaskScope.Workspace, ['-d', pickedFolder.fsPath], true)
+      return task.executeWithProgress(strings.INITING_PROJECT, () => this.addWorkspaceFolder(pickedFolder))
     }
 
     if (pickedFolder.composerFileExists) {
@@ -465,7 +487,8 @@ class ComposerCommands extends vscode.Disposable {
       }
     }
 
-    return ComposerCommandTask.execute('init', pickedFolder.wsFolder, [], true)
+    const task = new ComposerCommandTask('init', pickedFolder.wsFolder, [], true)
+    return task.executeWithProgress(strings.INITING_PROJECT)
   }
 
   async commandUpdate() {
@@ -709,7 +732,8 @@ class ComposerCommands extends vscode.Disposable {
     let pickedFolder = await this.pickWorkspaceFolder(false, false, true)
     if (!pickedFolder) { return }
 
-    if (pickedFolder === true) {
+    const newFolder = pickedFolder === true
+    if (newFolder) {
       pickedFolder = await vscode.window.showOpenDialog({
         canSelectFiles: false,
         canSelectFolders: true,
@@ -723,31 +747,14 @@ class ComposerCommands extends vscode.Disposable {
     }
 
     const args = await this.pickAdditionalArgs(['create-project'])
-
-    let taskResolver
-
-    const taskDisp = vscode.tasks.onDidEndTask((event) => {
-      if (
-        event.execution.task.name === 'create-project' &&
-        event.execution.task.definition.type === ComposerTaskDefinition.TASK_TYPE
-      ) {
-        taskDisp.dispose()
-        taskResolver()
+    const task = new ComposerCommandTask(
+      'create-project', vscode.TaskScope.Workspace, [...args, project, pickedFolder.fsPath]
+    )
+    task.executeWithProgress(strings.CREATING_PROJECT, () => {
+      if (newFolder) {
         this.addWorkspaceFolder(pickedFolder)
       }
     })
-
-    return vscode.window.withProgress(
-      {location: vscode.ProgressLocation.Window, title: strings.CREATING_PROJECT},
-      () => {
-        return new Promise((resolve) => {
-          taskResolver = resolve
-          ComposerCommandTask.execute(
-            'create-project', vscode.TaskScope.Workspace, [...args, project, pickedFolder.fsPath]
-          )
-        })
-      }
-    )
   }
 
 }
