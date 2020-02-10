@@ -427,8 +427,30 @@ class ComposerCommands extends vscode.Disposable {
   }
 
   async commandInit() {
-    const pickedFolder = await this.pickWorkspaceFolder(false)
+    let pickedFolder = await this.pickWorkspaceFolder(false, false, true)
     if (!pickedFolder) { return }
+
+    if (pickedFolder === true) {
+      pickedFolder = await vscode.window.showOpenDialog({
+        canSelectFiles: false,
+        canSelectFolders: true,
+        canSelectMany: false
+      })
+      if (!pickedFolder || !pickedFolder.length) { return }
+      pickedFolder = pickedFolder[0]
+
+      const taskDisp = vscode.tasks.onDidEndTask((event) => {
+        if (
+          event.execution.task.name === 'init' &&
+          event.execution.task.definition.type === ComposerTaskDefinition.TASK_TYPE
+        ) {
+          taskDisp.dispose()
+          this.addWorkspaceFolder(pickedFolder)
+        }
+      })
+
+      return ComposerCommandTask.execute('init', vscode.TaskScope.Workspace, ['-d', pickedFolder.fsPath], true)
+    }
 
     if (pickedFolder.composerFileExists) {
       const selected = await vscode.window.showQuickPick([
