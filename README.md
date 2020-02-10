@@ -1,9 +1,10 @@
 # Composer Companion
 
-![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/faelv.composer-companion?style=flat-square)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/faelv.composer-companion?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=faelv.composer-companion)
 ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/faelv.composer-companion?style=flat-square)
 ![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/faelv.composer-companion?style=flat-square)
-![GitHub issues](https://img.shields.io/github/issues/faelv/composer-companion?style=flat-square)
+[![GitHub issues](https://img.shields.io/github/issues/faelv/composer-companion?style=flat-square)](https://github.com/faelv/composer-companion/issues)
+[![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-blue?style=flat-square)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRBW9WAGJ9QFL&source=url)
 
 This is a companion extension for [**Composer**](https://getcomposer.org/), a dependency manager for PHP. Check out it's features below.
 
@@ -46,9 +47,9 @@ This extension contributes the following settings:
 
 ## Support
 
-If you liked this extension consider leaving a rating and/or review.
+If something isn't working open an issue [here](https://github.com/faelv/composer-companion/issues).
 
-[![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRBW9WAGJ9QFL&source=url)
+Usually no one bothers to do it, but if you liked this extension consider leaving a rating and/or review, it means a lot to me. There's also a donation button if you are feeling generous. Top 10 donors get to display their name and a link of their choosing here, just provide an e-mail in the donation message, or [contact me](https://github.com/faelv).
 
 #
 

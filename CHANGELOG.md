@@ -4,6 +4,10 @@ All changes to the **Composer Companion** extension will be documented in this f
 
 ## [Unreleased]
 _Upcoming changes:_
+#### _(none)_
+
+## [0.2.0]
+_Released on 2020-02-10, includes bug fixes, changes and new features_:
 #### Added
 - New command: _create-project_
 - New command: _depends, why_
