@@ -35,7 +35,8 @@
 		"onCommand:composerCompanion.search",
 		"onCommand:composerCompanion.selfupdate",
 		"onCommand:composerCompanion.clearcache",
-		"onCommand:composerCompanion.diagnose"
+		"onCommand:composerCompanion.diagnose",
+		"onCommand:composerCompanion.createproject"
 	],
 	"contributes": {
 		"commands": [
@@ -58,6 +59,10 @@
 			{
 				"command": "composerCompanion.selfupdate",
 				"title": "Composer: self-update"
+			},
+			{
+				"command": "composerCompanion.createproject",
+				"title": "Composer: create-project"
 			},
 			{
 				"command": "composerCompanion.open",

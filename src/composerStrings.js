@@ -16,10 +16,10 @@ class ComposerFlags {
   all = new ComposerFlagMap()
 
   constructor() {
-    this.set("--dev", "Install packages listed in require-dev", ['update', 'install'], -100)
+    this.set("--dev", "Install packages listed in require-dev", ['update', 'install', 'create-project'], -100)
     this.set("--dev:require", "Add packages to require-dev", ['require'], -100)
     this.set("--dev:remove", "Remove packages from require-dev", ['remove'], -100)
-    this.set("--no-dev", "Skip installing packages listed in require-dev", ['update', 'install'], -70)
+    this.set("--no-dev", "Skip installing packages listed in require-dev", ['update', 'install', 'create-project'], -70)
     this.set("--interactive", "Interactive interface to select the packages to update (alias: -i)", ['update'], -60)
 
     this.set("--all", "List all packages available in all your repositories", ['show'])
@@ -31,19 +31,22 @@ class ComposerFlags {
     this.set("--direct", "Shows only packages that are directly required by the root package", ['outdated'])
     this.set("--dry-run", "Simulate the command without actually doing anything", ['update', 'install'])
     this.set("--homepage", "Open the homepage instead of the repository URL", ['browse'])
-    this.set("--ignore-platform-reqs", "Ignore php, hhvm, lib-* and ext-* requirements", ['require', 'update', 'install', 'remove'])
+    this.set("--ignore-platform-reqs", "Ignore php, hhvm, lib-* and ext-* requirements", ['require', 'update', 'install', 'remove', 'create-project'])
+    this.set("--keep-vcs", "Whether to prevent deleting the vcs folder", ['create-project'])
     this.set("--lock", "Only updates the lock file hash", ['update'])
     this.set("--minor-only", "Show only packages that have minor SemVer-compatible updates", ['outdated'])
     this.set("--name-only", "List package names only", ['show'])
     this.set("--no-autoloader", "Skips autoloader generation", ['update', 'install'])
-    this.set("--no-cache", "Prevent use of the cache", ['update', 'install', 'require', 'remove', 'search', 'outdated', 'show', 'status', 'self-update'])
+    this.set("--no-cache", "Prevent use of the cache", ['update', 'install', 'require', 'remove', 'search', 'outdated', 'show', 'status', 'self-update', 'create-project'])
     this.set("--no-check-all", "Do not validate requires for overly strict/loose constraints", ['validate'])
     this.set("--no-check-lock", "Do not check if lock file is up to date", ['validate'])
     this.set("--no-check-publish", "Do not check for publish errors", ['validate'])
     this.set("--no-dev", "Disables autoload-dev rules", ['dump-autoload'])
     this.set("--no-dev:check-platform-reqs", "Disables checking of require-dev packages requirements", ['check-platform-reqs'])
-    this.set("--no-progress", "Removes the progress display", ['require', 'update', 'install', 'remove', 'self-update'])
-    this.set("--no-scripts", "Skips execution of scripts defined in composer.json", ['require', 'update', 'install', 'remove', 'dump-autoload'])
+    this.set("--no-install", "Whether to skip installation of the package dependencies", ['create-project'])
+    this.set("--no-progress", "Removes the progress display", ['require', 'update', 'install', 'remove', 'self-update', 'create-project'])
+    this.set("--no-secure-http", "Disable the secure-http config option temporarily", ['create-project'])
+    this.set("--no-scripts", "Skips execution of scripts defined in composer.json", ['require', 'update', 'install', 'remove', 'dump-autoload', 'create-project'])
     this.set("--no-suggest", "Skips suggested packages in the output", ['require', 'update', 'install'])
     this.set("--no-update", "Disables the automatic update of the dependencies", ['require', 'remove'])
     this.set('--no-update-with-dependencies', "Does not allow inherited dependencies to be updated with explicit dependencies", ['remove'])
@@ -52,12 +55,13 @@ class ComposerFlags {
     this.set("--optimize-autoloader", "Convert PSR-0/4 autoloading to classmap", ['require', 'update', 'install', 'remove'])
     this.set("--path", "Show package paths", ['show'])
     this.set("--platform", "List only platform packages (php & extensions)", ['show'])
-    this.set("--prefer-dist", "Install packages from dist when available", ['require', 'update', 'install'])
+    this.set("--prefer-dist", "Install packages from dist when available", ['require', 'update', 'install', 'create-project'])
     this.set("--prefer-lowest", "Prefer lowest versions of dependencies", ['require', 'update'])
-    this.set("--prefer-source", "Install packages from source when available", ['require', 'update', 'install'])
+    this.set("--prefer-source", "Install packages from source when available", ['require', 'update', 'install', 'create-project'])
     this.set("--prefer-stable", "Prefer stable versions of dependencies", ['require', 'update'])
     this.set("--preview", "Force an update to the preview channel", ['self-update'])
     this.set("--recursive", "Recursively resolves up to the root package", ['depends', 'prohibits'])
+    this.set("--remove-vcs", "Whether to force deletion of the vcs folder without prompting", ['create-project'])
     this.set("--rollback", "Revert to an older installation of composer", ['self-update'])
     this.set("--root-reqs", "Restricts the update to your first degree dependencies", ['update'])
     this.set("--self", "List the root package info", ['show'])
@@ -65,6 +69,7 @@ class ComposerFlags {
     this.set("--show", "Only show the homepage or repository URL", ['browse'])
     this.set("--snapshot", "Force an update to the snapshot channel", ['self-update'])
     this.set("--sort-packages", "Keep packages sorted in composer.json", ['require'])
+    this.set("--stability=dev", "Use a dev version", ['create-project'])
     this.set("--stable", "Force an update to the stable channel", ['self-update'])
     this.set("--tree", "List the dependencies as a tree", ['show'])
     this.set("--tree:depends", "Prints the results as a nested tree, implies --recursive", ['depends', 'prohibits'])
@@ -76,7 +81,7 @@ class ComposerFlags {
     this.set("--with-all-dependencies", "Add also all dependencies of whitelisted packages to the whitelist", ['update'])
     this.set("--with-dependencies", "Add also dependencies of whitelisted packages to the whitelist", ['update'])
     this.set("--with-dependencies:validate", "Also validate the composer.json of all installed dependencies", ['validate'])
-    this.set("--verbose", "More verbose", ['update', 'install', 'require', 'remove', 'outdated', 'show', 'status', 'validate', 'self-update', 'dump-autoload'])
+    this.set("--verbose", "More verbose", ['update', 'install', 'require', 'remove', 'outdated', 'show', 'status', 'validate', 'self-update', 'dump-autoload', 'create-project'])
   }
 
   /**
@@ -144,6 +149,7 @@ module.exports = {
   ENABLED: 'Enabled',
   YES: 'Yes',
   NO: 'No',
+  NEW_FOLDER: 'New Folder',
   FOLDER_ADDED: 'Added',
   FOLDER_REMOVED: 'Removed',
   FOLDER_DISABLED: 'Disabled',
@@ -160,6 +166,7 @@ module.exports = {
   SELECT_WS_FOLDER: 'Select a workspace folder',
   SELECT_ADDITIONAL_FLAGS: 'Select additional options or <Esc> to skip',
   REQUIRE_PROMPT: 'Type the package names or leave it empty to search in terminal',
+  CREATE_PROJECT_PROMPT: 'Type the name of the package/project',
   SEARCH_PROMPT: 'Type your search...',
   UPDATE_PROMPT: 'Optionally select packages to update (or use --interactive) or <Esc> to cancel',
   REMOVE_PROMPT: 'Select packages to remove or <Esc> to cancel',
@@ -169,7 +176,7 @@ module.exports = {
   SELFUPDATE_PROMPT: 'Optionally specify a version or <Esc> to use latest',
   EXEC_BIN_PROMPT: 'Select a binary to execute or <Esc> to cancel',
   EXEC_ARGS_PROMPT: 'Optional arguments',
-  REQUIRE_PLACEHOLDER: 'vendor/package vendor2/package2:1.0',
+  PACKAGE_PLACEHOLDER: 'vendor/package[:version]',
   INVALID_PACKAGE_NAMES: 'There are invalid package names',
   INVALID_EMPTY: 'It can\'t be empty',
   NO_WORKSPACE_MSG: 'No workspace, open a folder or workspace first',
@@ -179,6 +186,8 @@ module.exports = {
   FOLDER_DISABLED_MSG: 'Disabled for',
   FETCHING_BINARIES: 'Fetching binaries',
   FETCHING_PACKAGES: 'Fetching packages',
+  CREATING_PROJECT: 'Creating project, please wait',
+  OPEN_FOLDER_BTN: 'Create into this folder',
   COMPOSER_OVERWRITE: 'You will overwrite this folder\'s composer.json. Continue?',
 
   flags: new ComposerFlags()

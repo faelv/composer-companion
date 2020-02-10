@@ -127,6 +127,7 @@ class ComposerCommands extends vscode.Disposable {
     add(vscode.commands.registerCommand('composerCompanion.checkplatformreqs', this.commandCheckPlatformReqs, this))
     add(vscode.commands.registerCommand('composerCompanion.browse', this.commandBrowse, this))
     add(vscode.commands.registerCommand('composerCompanion.depends', this.commandDepends, this))
+    add(vscode.commands.registerCommand('composerCompanion.createproject', this.commandCreateProject, this))
   }
 
   unregister() {
@@ -139,11 +140,19 @@ class ComposerCommands extends vscode.Disposable {
   /**
    * @param {boolean} checkComposerFile
    * @param {boolean} checkEnabled
-   * @returns Promise<ComposerWorkspaceFolderScripts | null>
+   * @param {boolean} showNew
+   * @returns Promise<ComposerWorkspaceFolderScripts | null | true>
    */
-  async pickWorkspaceFolder(checkComposerFile = true, checkEnabled = true) {
+  async pickWorkspaceFolder(checkComposerFile = true, checkEnabled = true, showNew = false) {
     const workspaceFolders = ComposerWorkspaceFolders.getInstance()
     let items = []
+
+    if (showNew) {
+      items.push({
+        label: strings.NEW_FOLDER,
+        folder: true
+      })
+    }
 
     for (const folder of workspaceFolders.folders) {
       items.push({
@@ -185,6 +194,23 @@ class ComposerCommands extends vscode.Disposable {
     }
 
     return result
+  }
+
+  /**
+   * @param {vscode.Uri} folderUri
+   * @param {boolean} forceReload
+   */
+  addWorkspaceFolder(folderUri, forceReload = false) {
+    if (vscode.workspace.workspaceFolders && !forceReload) {
+      vscode.workspace.updateWorkspaceFolders(
+        vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0,
+        0,
+        {uri: folderUri}
+      )
+      vscode.commands.executeCommand('workbench.files.action.focusFilesExplorer')
+    } else {
+      vscode.commands.executeCommand('vscode.openFolder', folderUri)
+    }
   }
 
   /**
@@ -280,7 +306,7 @@ class ComposerCommands extends vscode.Disposable {
     const input = await vscode.window.showInputBox({
       prompt,
       ignoreFocusOut: true,
-      placeHolder: strings.REQUIRE_PLACEHOLDER,
+      placeHolder: strings.PACKAGE_PLACEHOLDER,
       validateInput: (value) => {
         value = value.trim()
         if (value.length === 0) {
@@ -665,6 +691,55 @@ class ComposerCommands extends vscode.Disposable {
 
     this.output.appendLine(`${strings.COMMANDS}: [exec] "${selected}" (${pickedFolder.wsFolder.name})`)
     return vscode.tasks.executeTask(task)
+  }
+
+  async commandCreateProject() {
+    let project = await this.inputPackages(strings.CREATE_PROJECT_PROMPT)
+    if (!project || !project.length) { return }
+    project = project[0]
+
+    let pickedFolder = await this.pickWorkspaceFolder(false, false, true)
+    if (!pickedFolder) { return }
+
+    if (pickedFolder === true) {
+      pickedFolder = await vscode.window.showOpenDialog({
+        canSelectFiles: false,
+        canSelectFolders: true,
+        canSelectMany: false,
+        openLabel: strings.OPEN_FOLDER_BTN
+      })
+      if (!pickedFolder || !pickedFolder.length) { return }
+      pickedFolder = pickedFolder[0]
+    } else {
+      pickedFolder = pickedFolder.wsFolder.uri
+    }
+
+    const args = await this.pickAdditionalArgs(['create-project'])
+
+    let taskResolver
+
+    const taskDisp = vscode.tasks.onDidEndTask((event) => {
+      if (
+        event.execution.task.name === 'create-project' &&
+        event.execution.task.definition.type === ComposerTaskDefinition.TASK_TYPE
+      ) {
+        taskDisp.dispose()
+        taskResolver()
+        this.addWorkspaceFolder(pickedFolder)
+      }
+    })
+
+    return vscode.window.withProgress(
+      {location: vscode.ProgressLocation.Window, title: strings.CREATING_PROJECT},
+      () => {
+        return new Promise((resolve) => {
+          taskResolver = resolve
+          ComposerCommandTask.execute(
+            'create-project', vscode.TaskScope.Workspace, [...args, project, pickedFolder.fsPath]
+          )
+        })
+      }
+    )
   }
 
 }
