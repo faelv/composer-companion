@@ -352,16 +352,6 @@ class ComposerCommands extends vscode.Disposable {
     return input.trim()
   }
 
-  isWorkspaceEmpty() {
-    // NOTE: We could use a global task instead, but global tasks are not supported yest
-    if (!vscode.workspace.workspaceFolders || !vscode.workspace.workspaceFolders.length) {
-      vscode.window.showInformationMessage(`${strings.EXT_NAME}: ${strings.NO_WORKSPACE_MSG}`)
-      this.output.appendLine(`${strings.COMMANDS}: ${strings.NO_WORKSPACE_MSG}`)
-      return true
-    }
-    return false
-  }
-
   /**
    * @param {string | ComposerScriptsTreeScript | undefined} script
    * @param {vscodeUri | undefined} folderUri
@@ -517,8 +507,6 @@ class ComposerCommands extends vscode.Disposable {
   }
 
   async commandSearch() {
-    if (this.isWorkspaceEmpty()) { return }
-
     let query = await this.inputNotEmpty(strings.SEARCH_PROMPT)
     if (!query) { return }
 
@@ -529,8 +517,6 @@ class ComposerCommands extends vscode.Disposable {
   }
 
   async commandSelfUpdate() {
-    if (this.isWorkspaceEmpty()) { return }
-
     let version = await this.inputNotEmpty(strings.SELFUPDATE_PROMPT)
     let args = await this.pickAdditionalArgs(['self-update'])
 
@@ -542,8 +528,6 @@ class ComposerCommands extends vscode.Disposable {
   }
 
   async commandClearCache() {
-    if (this.isWorkspaceEmpty()) { return }
-
     return ComposerCommandTask.execute('clear-cache', vscode.TaskScope.Workspace)
   }
 

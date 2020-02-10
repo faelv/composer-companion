@@ -11,6 +11,8 @@ _Upcoming changes:_
 - New command: _check-platform-reqs_
 #### Fixed
 - Argument parsing in exec command
+#### Changed
+- Search, self-update and clear-cache commands no longer require a open workspace
 
 ## [0.1.1]
 _Released on 2020-02-06, includes only bug fixes_:
