@@ -5,7 +5,7 @@ const strings = require('./composerStrings');
 const { ComposerSettings } = require('./composerSettings')
 const { ComposerOutput } = require('./composerOutput');
 
-class ComposerWorkspaceFolderScripts extends vscode.Disposable {
+class ComposerWorkspaceFolderData extends vscode.Disposable {
 
   static COMPOSER_FILE = 'composer.json'
 
@@ -31,12 +31,12 @@ class ComposerWorkspaceFolderScripts extends vscode.Disposable {
   enabled = false
   /** @type {boolean} */
   _stale = false
-  /** @type {(sender: ComposerWorkspaceFolderScripts) => any} */
+  /** @type {(sender: ComposerWorkspaceFolderData) => any} */
   onLoaded
 
   /**
    * @param {vscode.Uri} wsFolder
-   * @param {(sender: ComposerWorkspaceFolderScripts) => any} onLoaded
+   * @param {(sender: ComposerWorkspaceFolderData) => any} onLoaded
    */
   constructor(wsFolder, onLoaded) {
     super(() => {
@@ -50,7 +50,7 @@ class ComposerWorkspaceFolderScripts extends vscode.Disposable {
     this.wsFolder = wsFolder
 
     this.composerFileUri = this.wsFolder.uri.with({
-      path: path.join(this.wsFolder.uri.fsPath, ComposerWorkspaceFolderScripts.COMPOSER_FILE)
+      path: path.join(this.wsFolder.uri.fsPath, ComposerWorkspaceFolderData.COMPOSER_FILE)
     })
     this.composerFilePath = this.composerFileUri.fsPath
     this.composerFileWatcher = vscode.workspace.createFileSystemWatcher(this.composerFilePath)
@@ -199,7 +199,7 @@ class ComposerWorkspaceFolders extends vscode.Disposable {
   static instance
   /** @type {ComposerOutput} */
 	output
-  /** @type {Map<vscode.WorkspaceFolder, ComposerWorkspaceFolderScripts>} */
+  /** @type {Map<vscode.WorkspaceFolder, ComposerWorkspaceFolderData>} */
   wsFolderMap = new Map()
   /** @type Set<function> */
   listeners = new Set()
@@ -237,7 +237,7 @@ class ComposerWorkspaceFolders extends vscode.Disposable {
     this.loadFolders()
   }
 
-  /** @returns {ComposerWorkspaceFolderScripts[]} */
+  /** @returns {ComposerWorkspaceFolderData[]} */
   get folders() {
     return Array.from(this.wsFolderMap.values())
   }
@@ -271,7 +271,7 @@ class ComposerWorkspaceFolders extends vscode.Disposable {
   }
 
   /**
-   * @param {ComposerWorkspaceFolderScripts} sender
+   * @param {ComposerWorkspaceFolderData} sender
    */
   onFolderLoaded(sender) {
     for (const listener of this.listeners) {
@@ -280,7 +280,7 @@ class ComposerWorkspaceFolders extends vscode.Disposable {
   }
 
   /**
-   * @param {(sender: ComposerWorkspaceFolderScripts) => any} listener
+   * @param {(sender: ComposerWorkspaceFolderData) => any} listener
    */
   addOnFolderLoadedListener(listener) {
     this.listeners.add(listener)
@@ -291,7 +291,7 @@ class ComposerWorkspaceFolders extends vscode.Disposable {
    */
   addFolder(wsFolder) {
     if (!this.wsFolderMap.has(wsFolder)) {
-      const folder = new ComposerWorkspaceFolderScripts(wsFolder, (sender) => this.onFolderLoaded(sender))
+      const folder = new ComposerWorkspaceFolderData(wsFolder, (sender) => this.onFolderLoaded(sender))
       this.wsFolderMap.set(wsFolder, folder)
 
       this.output.appendLine(`${strings.WS_FOLDERS}: [${strings.FOLDER_ADDED}] "${wsFolder.uri.fsPath}"`)
@@ -316,5 +316,5 @@ class ComposerWorkspaceFolders extends vscode.Disposable {
 
 module.exports = {
   ComposerWorkspaceFolders,
-  ComposerWorkspaceFolderScripts
+  ComposerWorkspaceFolderData
 }

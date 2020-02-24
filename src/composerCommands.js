@@ -6,7 +6,7 @@ const { ComposerOutput } = require('./composerOutput');
 const { ComposerSettings } = require('./composerSettings');
 const { ComposerTaskProvider, ComposerTaskDefinition, ComposerBaseTask } = require('./composerTaskProvider');
 const { ComposerScriptsTreeScript } = require('./composerScriptsTreeDataProvider');
-const { ComposerWorkspaceFolders, ComposerWorkspaceFolderScripts } = require('./composerWorkspaceFolders');
+const { ComposerWorkspaceFolders, ComposerWorkspaceFolderData } = require('./composerWorkspaceFolders');
 
 class ComposerCommandTask extends ComposerBaseTask {
 
@@ -172,7 +172,7 @@ class ComposerCommands extends vscode.Disposable {
    * @param {boolean} checkComposerFile
    * @param {boolean} checkEnabled
    * @param {boolean} showNew
-   * @returns Promise<ComposerWorkspaceFolderScripts | null | true>
+   * @returns Promise<ComposerWorkspaceFolderData | null | true>
    */
   async pickWorkspaceFolder(checkComposerFile = true, checkEnabled = true, showNew = false) {
     const workspaceFolders = ComposerWorkspaceFolders.getInstance()
@@ -276,7 +276,7 @@ class ComposerCommands extends vscode.Disposable {
   }
 
   /**
-   * @param {ComposerWorkspaceFolderScripts} folder
+   * @param {ComposerWorkspaceFolderData} folder
    * @param {string} prompt
    * @param {{dev: number, nodev: number}} info
    * @returns {Promise<false | string[]>}
@@ -309,7 +309,7 @@ class ComposerCommands extends vscode.Disposable {
 
   /**
    *
-   * @param {ComposerWorkspaceFolderScripts} folder
+   * @param {ComposerWorkspaceFolderData} folder
    * @param {string} prompt
    * @returns {Promise<false | string>}
    */

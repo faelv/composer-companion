@@ -3,7 +3,7 @@ const path = require('path')
 const strings = require('./composerStrings');
 const { ComposerSettings } = require('./composerSettings');
 const { ComposerOutput } = require('./composerOutput');
-const { ComposerWorkspaceFolders, ComposerWorkspaceFolderScripts } = require('./composerWorkspaceFolders');
+const { ComposerWorkspaceFolders, ComposerWorkspaceFolderData } = require('./composerWorkspaceFolders');
 
 class ComposerScriptsTreeItem extends vscode.TreeItem {
 
@@ -38,11 +38,11 @@ class ComposerScriptsTreeScriptCommand {
   tooltip = strings.OPEN_COMPOSER_FILE
   /** @type {string} */
   command = 'composerCompanion.open'
-  /** @type {ComposerWorkspaceFolderScripts} */
+  /** @type {ComposerWorkspaceFolderData} */
   ownerFolder
 
   /**
-   * @param {ComposerWorkspaceFolderScripts} ownerFolder
+   * @param {ComposerWorkspaceFolderData} ownerFolder
    */
   constructor(ownerFolder) {
     this.ownerFolder = ownerFolder
@@ -83,13 +83,13 @@ class ComposerScriptsTreeScript extends ComposerScriptsTreeItem {
 
 class ComposerScriptsTreeFolder extends ComposerScriptsTreeItem {
 
-  /** @type {ComposerWorkspaceFolderScripts} */
+  /** @type {ComposerWorkspaceFolderData} */
   folder
   /** @type {vscode.ThemeIcon} */
   iconPath = vscode.ThemeIcon.Folder
 
   /**
-   * @param {ComposerWorkspaceFolderScripts} folder
+   * @param {ComposerWorkspaceFolderData} folder
    */
   constructor(folder) {
     super(false, vscode.TreeItemCollapsibleState.Expanded)
@@ -119,7 +119,7 @@ class ComposerScriptsTreeDataProvider extends vscode.Disposable {
   settings
   /** @type {ComposerWorkspaceFolders} */
   workspaceFolders
-  /** @type {Map<ComposerWorkspaceFolderScripts, ComposerScriptsTreeFolder>} */
+  /** @type {Map<ComposerWorkspaceFolderData, ComposerScriptsTreeFolder>} */
   rootChildren = new Map()
   /** @type {vscode.Disposable} */
   registerDisp

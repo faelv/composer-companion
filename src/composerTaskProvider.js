@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const cp = require('child_process');
 const strings = require('./composerStrings');
-const { ComposerWorkspaceFolders, ComposerWorkspaceFolderScripts } = require('./composerWorkspaceFolders');
+const { ComposerWorkspaceFolders, ComposerWorkspaceFolderData } = require('./composerWorkspaceFolders');
 const { ComposerSettings } = require('./composerSettings');
 const { ComposerOutput } = require('./composerOutput');
 
