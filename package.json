@@ -222,6 +222,7 @@
 		"eslint": "^6.6.0",
 		"glob": "^7.1.5",
 		"mocha": "^6.2.2",
+		"simple-mock": "^0.8.0",
 		"typescript": "^3.6.4",
 		"vscode-test": "^1.2.2"
 	}
