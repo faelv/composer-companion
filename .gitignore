@@ -3,3 +3,4 @@
 bin
 bin/**
 .vscode/settings.json
+.vscode-test/**

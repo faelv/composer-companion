@@ -58,5 +58,6 @@ function deactivate() {
 
 module.exports = {
 	activate,
-	deactivate
+	deactivate,
+	ComposerExtension
 }
