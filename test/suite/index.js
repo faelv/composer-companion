@@ -6,8 +6,8 @@ function run() {
 	// Create the mocha test
 	const mocha = new Mocha({
 		ui: 'tdd',
-		useColors: true,
-		enableTimeouts: false
+		color: true,
+		timeout: false
 	});
 
 	const testsRoot = path.resolve(__dirname, '..');

@@ -4,3 +4,5 @@ bin
 bin/**
 .vscode/settings.json
 .vscode-test/**
+test/data/**
+!test/data/*.md
