@@ -527,7 +527,7 @@ class ComposerCommands extends vscode.Disposable {
     const packages = await this.pickPackages(pickedFolder, strings.REMOVE_PROMPT, info)
     if (!packages || !packages.length) { return }
 
-    const args = await this.pickAdditionalArgs(['update'], info.dev ? ['--dev'] : [])
+    const args = await this.pickAdditionalArgs(['remove'], info.dev ? ['--dev'] : [])
     return ComposerCommandTask.execute('remove', pickedFolder.wsFolder, [...packages, ...args])
   }
 
