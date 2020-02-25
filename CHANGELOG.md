@@ -6,6 +6,11 @@ All changes to the **Composer Companion** extension will be documented in this f
 _Upcoming changes:_
 #### _(none)_
 
+## [0.2.1]
+_Released on 2020-02-25, includes only bug fixes_:
+#### Fixed
+- Wrong additional arguments in remove command
+
 ## [0.2.0]
 _Released on 2020-02-10, includes bug fixes, changes and new features_:
 #### Added
