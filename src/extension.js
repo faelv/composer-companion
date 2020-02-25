@@ -8,6 +8,8 @@ const { ComposerScriptsTreeDataProvider } = require('./composerScriptsTreeDataPr
 
 class ComposerExtension extends vscode.Disposable {
 
+	/** @type {ComposerExtension} */
+  static instance
 	/** @type {ComposerOutput} */
 	output
 	/** @type {ComposerSettings} */
@@ -20,6 +22,14 @@ class ComposerExtension extends vscode.Disposable {
 	taskProvider
 	/** @type {ComposerScriptsTreeDataProvider} */
 	treeProvider
+
+	/** @returns {ComposerExtension} */
+  static getInstance() {
+    if (!ComposerExtension.instance) {
+      ComposerExtension.instance = new ComposerExtension()
+    }
+    return ComposerExtension.instance
+  }
 
 	constructor() {
 		super(() => {
@@ -50,7 +60,9 @@ class ComposerExtension extends vscode.Disposable {
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-	context.subscriptions.push(new ComposerExtension());
+	const ext = ComposerExtension.getInstance();
+	context.subscriptions.push(ext);
+	return ext
 }
 
 function deactivate() {
