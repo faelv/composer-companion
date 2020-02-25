@@ -49,17 +49,25 @@ suite('Commands', () => {
 		firstWSFDataOnLoaded = firstWSFData.onLoaded
 
 		simple.mock(vscode.window, 'showQuickPick').callFn(async (items, options) => {
-			if (options.canPickMany) {
-				if (!Array.isArray(quickPickIndex)) {
-					quickPickIndex = [quickPickIndex]
-				}
-				return items.filter((value, index) => quickPickIndex.includes(index))
+			let indexes
+
+			if (typeof quickPickIndex === 'function') {
+				indexes = quickPickIndex(items, options)
 			} else {
-				return items[quickPickIndex]
+				indexes = quickPickIndex
+			}
+
+			if (options.canPickMany) {
+				if (!Array.isArray(indexes)) {
+					indexes = [indexes]
+				}
+				return items.filter((value, index) => indexes.includes(index))
+			} else {
+				return items[indexes]
 			}
 		})
 		simple.mock(vscode.window, 'showOpenDialog').callFn(async (options) => {
-			return [vscode.Uri.file(testDir)]
+			return [firstWSFData.folderUri]
 		})
 		simple.mock(vscode.window, 'showInputBox').callFn(async (options) => {
 			if (options.validateInput) {
@@ -88,6 +96,8 @@ suite('Commands', () => {
 	})
 
 	test('init', async () => {
+		quickPickIndex = 1
+
 		let terminal
 
 		const eDisp = vscode.window.onDidChangeActiveTerminal(async (t) => {
@@ -117,13 +127,26 @@ suite('Commands', () => {
 	});
 
 	test('open', async () => {
-		const fileUri = vscode.Uri.file(path.join(testDir, 'composer.json'))
+		const filePath = path.join(testDir, 'composer.json')
+		const fileUri = vscode.Uri.file(path.join(filePath))
 
 		const editorA = await vscode.commands.executeCommand('composerCompanion.open', fileUri)
 		assert.notEqual(editorA, undefined, 'Failed to open composer.json from parameter')
 
 		const editorB = await vscode.commands.executeCommand('composerCompanion.open')
 		assert.notEqual(editorB, undefined, 'Failed to open composer.json from picked folder')
+
+		let jsonStr = fs.readFileSync(filePath, {encoding: 'utf8'})
+		let jsonObj = JSON.parse(jsonStr)
+		jsonObj.scripts = {
+			test: 'echo test'
+		}
+		jsonStr = JSON.stringify(jsonObj)
+		fs.writeFileSync(filePath, jsonStr, 'utf8')
+		firstWSFData._stale = true
+		await firstWSFData.loadScripts()
+
+		vscode.commands.executeCommand('workbench.action.closeActiveEditor')
 	});
 
 	test('require', async () => {
@@ -131,6 +154,8 @@ suite('Commands', () => {
 		quickPickIndex = [0, 8] // --dev 0 --no-update 8 --no-cache 4
 
 		let resultResolve
+		let taskExec
+
 		const result = new Promise((resolve) => {
 			resultResolve = resolve
 		})
@@ -139,13 +164,169 @@ suite('Commands', () => {
 			firstWSFDataOnLoaded(s)
 			const req = firstWSFData.requires[0]
 			if (req) {
+				assert.equal(firstWSFData.requireSet.size, 2, 'Wrong requireSet size')
 				assert.equal(req.label, 'phpunit/phpunit', 'Wrong require label')
 				assert.equal(req.dev, true, 'Dependency not a dev dependency')
+				taskExec.terminate()
 				resultResolve()
 			}
 		}
 
-		vscode.commands.executeCommand('composerCompanion.require')
+		taskExec = await vscode.commands.executeCommand('composerCompanion.require')
+		return result
+	}).timeout(extraTime);
+
+	test('remove', async () => {
+		let qpCall = 0
+		let resultResolve
+		let taskExec
+
+		quickPickIndex = () => {
+			qpCall++
+			if (qpCall === 1) { return [1] }
+			if (qpCall === 2) { return [0, 7] }
+		}
+
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		firstWSFData.onLoaded = (s) => {
+			firstWSFDataOnLoaded(s)
+			const req = firstWSFData.requires[0]
+			if (req) {
+				assert.equal(firstWSFData.requireSet.size, 1, 'Wrong requireSet size')
+				assert.equal(req.label, 'phpunit/phpunit', 'Wrong require label')
+				taskExec.terminate()
+				resultResolve()
+			}
+		}
+
+		taskExec = await vscode.commands.executeCommand('composerCompanion.remove')
+		return result
+	});
+
+	test('install', async () => {
+		quickPickIndex = []
+
+		let resultResolve
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		const taskDisp = vscode.tasks.onDidEndTask((event) => {
+			if (event.execution.task.name === 'install' && event.execution.task.definition.type === 'composer') {
+				taskDisp.dispose()
+				assert.ok(fs.existsSync(path.join(testDir, 'vendor', 'autoload.php')), 'Missing autoload.php')
+        resultResolve()
+      }
+		})
+
+		await vscode.commands.executeCommand('composerCompanion.install')
+		return result
+	}).timeout(extraTime);
+
+	test('update', async () => {
+		fs.unlinkSync(path.join(testDir, 'vendor', 'autoload.php'))
+
+		quickPickIndex = []
+
+		let resultResolve
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		const taskDisp = vscode.tasks.onDidEndTask((event) => {
+			if (event.execution.task.name === 'update' && event.execution.task.definition.type === 'composer') {
+				taskDisp.dispose()
+				assert.ok(fs.existsSync(path.join(testDir, 'vendor', 'autoload.php')), 'Missing autoload.php')
+        resultResolve()
+      }
+		})
+
+		await vscode.commands.executeCommand('composerCompanion.update')
+		return result
+	}).timeout(extraTime);
+
+	test('exec', async () => {
+		quickPickIndex = 0
+		inputBoxResult = '-h'
+
+		let resultResolve
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		const taskDisp = vscode.tasks.onDidEndTask((event) => {
+			if (event.execution.task.name === 'exec' && event.execution.task.definition.type === 'composer') {
+				taskDisp.dispose()
+
+        resultResolve()
+      }
+		})
+
+		await vscode.commands.executeCommand('composerCompanion.exec')
+		return result
+	}).timeout(extraTime);
+
+	test('run [string]', async () => {
+		let resultResolve
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		const taskDisp = vscode.tasks.onDidEndTask((event) => {
+			if (event.execution.task.name === 'test' && event.execution.task.definition.type === 'composer') {
+				taskDisp.dispose()
+        resultResolve()
+      }
+		})
+
+		const cr = await vscode.commands.executeCommand('composerCompanion.run', 'test', firstWSFData.folderUri)
+		assert.notEqual(cr, undefined, 'Undefined task')
+		return result
+	}).timeout(extraTime);
+
+	test('run [pick]', async () => {
+		let resultResolve
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		const taskDisp = vscode.tasks.onDidEndTask((event) => {
+			if (event.execution.task.name === 'test' && event.execution.task.definition.type === 'composer') {
+				taskDisp.dispose()
+        resultResolve()
+      }
+		})
+
+		const cr = await vscode.commands.executeCommand('composerCompanion.run')
+		assert.notEqual(cr, undefined, 'Undefined task')
+		return result
+	}).timeout(extraTime);
+
+	test('run [tree]', async () => {
+		const rootChildren = await extension.treeProvider.getChildren(undefined)
+		assert.equal(rootChildren.length, 1, 'Wrong number of tree root children')
+
+		const parent = rootChildren[0]
+		const children = await extension.treeProvider.getChildren(parent)
+		assert.equal(children.length, 1, 'Wrong number of tree children')
+
+		let resultResolve
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		const taskDisp = vscode.tasks.onDidEndTask((event) => {
+			if (event.execution.task.name === 'test' && event.execution.task.definition.type === 'composer') {
+				taskDisp.dispose()
+        resultResolve()
+      }
+		})
+
+		const cr = await vscode.commands.executeCommand('composerCompanion.run', children[0])
+		assert.notEqual(cr, undefined, 'Undefined task')
 		return result
 	}).timeout(extraTime);
 
