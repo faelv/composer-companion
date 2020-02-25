@@ -3,7 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const simple = require('simple-mock');
 const vscode = require('vscode');
-//const { ComposerExtension } = require('../../src/extension');
+const { ComposerExtension } = require('../../src/extension');
+const { ComposerWorkspaceFolderData } = require('../../src/composerWorkspaceFolders');
 
 function cleanDir(dir, rootDir = true) {
 	fs.readdirSync(dir).forEach((file) => {
@@ -11,7 +12,7 @@ function cleanDir(dir, rootDir = true) {
 		if (fs.lstatSync(cur).isDirectory()) {
 			cleanDir(cur, false)
 		} else {
-			if (file !== 'README.md') {
+			if (!(file === 'README.md' && rootDir)) {
 				fs.unlinkSync(cur)
 			}
 		}
@@ -23,36 +24,67 @@ function cleanDir(dir, rootDir = true) {
 
 suite('Commands', () => {
 
+	const extraTime = '120s'
+
 	/** @type {ComposerExtension} */
 	let extension
 	/** @type {string} */
 	let testDir
 	/** @type {number} */
-	let quickPickIndex = 0
+	let quickPickIndex
+	/** @type {string} */
+	let inputBoxResult
+	/** @type {ComposerWorkspaceFolderData} */
+	let firstWSFData
+	/** @type {Function} */
+	let firstWSFDataOnLoaded
 
 	suiteSetup(() => {
 		testDir = path.resolve(__dirname, '..', '..', 'test', 'data')
 		cleanDir(testDir)
 
-		simple.mock(vscode.window, 'showQuickPick').callFn(async (items, options) => items[quickPickIndex])
+		extension = ComposerExtension.getInstance()
+
+		firstWSFData = extension.workspaceFolders.folders[0]
+		firstWSFDataOnLoaded = firstWSFData.onLoaded
+
+		simple.mock(vscode.window, 'showQuickPick').callFn(async (items, options) => {
+			if (options.canPickMany) {
+				if (!Array.isArray(quickPickIndex)) {
+					quickPickIndex = [quickPickIndex]
+				}
+				return items.filter((value, index) => quickPickIndex.includes(index))
+			} else {
+				return items[quickPickIndex]
+			}
+		})
 		simple.mock(vscode.window, 'showOpenDialog').callFn(async (options) => {
 			return [vscode.Uri.file(testDir)]
 		})
-
-		//extension = new ComposerExtension()
-
-		/* simple.mock(extension.commands, 'addWorkspaceFolder').callFn((folderUri) => {
-			vscode.workspace.updateWorkspaceFolders(
-        vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0,
-        0,
-        {uri: folderUri}
-      )
-		}) */
+		simple.mock(vscode.window, 'showInputBox').callFn(async (options) => {
+			if (options.validateInput) {
+				const vr = options.validateInput(inputBoxResult)
+				if ((typeof vr === 'string') && vr.length) {
+					return
+				}
+			}
+			return inputBoxResult
+		})
+		simple.mock(extension.commands, 'addWorkspaceFolder').returnWith(undefined)
 	})
 
 	suiteTeardown(() => {
 		simple.restore()
 		cleanDir(testDir)
+	})
+
+	setup(() => {
+		quickPickIndex = 0
+		inputBoxResult = ''
+	})
+
+	teardown(() => {
+		firstWSFData.onLoaded = firstWSFDataOnLoaded
 	})
 
 	test('init', async () => {
@@ -77,7 +109,6 @@ suite('Commands', () => {
 			eDisp.dispose()
 		})
 
-		//await extension.commands.commandInit()
 		await vscode.commands.executeCommand('composerCompanion.init')
 		if (terminal) {
 			terminal.dispose()
@@ -88,13 +119,34 @@ suite('Commands', () => {
 	test('open', async () => {
 		const fileUri = vscode.Uri.file(path.join(testDir, 'composer.json'))
 
-		//const editorA = await extension.commands.commandOpen(fileUri)
 		const editorA = await vscode.commands.executeCommand('composerCompanion.open', fileUri)
 		assert.notEqual(editorA, undefined, 'Failed to open composer.json from parameter')
 
-		//const editorB = await extension.commands.commandOpen()
 		const editorB = await vscode.commands.executeCommand('composerCompanion.open')
 		assert.notEqual(editorB, undefined, 'Failed to open composer.json from picked folder')
 	});
+
+	test('require', async () => {
+		inputBoxResult = 'phpunit/phpunit:6.5.14 psr/log:1.1.2'
+		quickPickIndex = [0, 8] // --dev 0 --no-update 8 --no-cache 4
+
+		let resultResolve
+		const result = new Promise((resolve) => {
+			resultResolve = resolve
+		})
+
+		firstWSFData.onLoaded = (s) => {
+			firstWSFDataOnLoaded(s)
+			const req = firstWSFData.requires[0]
+			if (req) {
+				assert.equal(req.label, 'phpunit/phpunit', 'Wrong require label')
+				assert.equal(req.dev, true, 'Dependency not a dev dependency')
+				resultResolve()
+			}
+		}
+
+		vscode.commands.executeCommand('composerCompanion.require')
+		return result
+	}).timeout(extraTime);
 
 });
