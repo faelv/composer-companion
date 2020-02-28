@@ -89,6 +89,10 @@ suite('Commands', () => {
 	setup(() => {
 		quickPickIndex = 0
 		inputBoxResult = ''
+
+		return new Promise((resolve) => {
+			setTimeout(() => resolve(), 2000)
+		})
 	})
 
 	teardown(() => {
