@@ -1,0 +1,15 @@
+language: node_js
+
+node_js: 10
+
+os: linux
+
+dist: xenial
+
+services:
+  - xvfb
+
+cache:
+  directories:
+    - .vscode-test
+    - $HOME/.cache/composer
