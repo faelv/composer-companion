@@ -24,7 +24,7 @@ function cleanDir(dir, rootDir = true) {
 
 suite('Commands', () => {
 
-	const extraTime = '120s'
+	const extraTime = '100s'
 
 	/** @type {ComposerExtension} */
 	let extension
@@ -271,7 +271,7 @@ suite('Commands', () => {
 
 		await vscode.commands.executeCommand('composerCompanion.exec')
 		return result
-	}).timeout(extraTime);
+	});
 
 	test('run [string]', async () => {
 		let resultResolve
@@ -289,7 +289,7 @@ suite('Commands', () => {
 		const cr = await vscode.commands.executeCommand('composerCompanion.run', 'test', firstWSFData.folderUri)
 		assert.notEqual(cr, undefined, 'Undefined task')
 		return result
-	}).timeout(extraTime);
+	});
 
 	test('run [pick]', async () => {
 		let resultResolve
@@ -307,7 +307,7 @@ suite('Commands', () => {
 		const cr = await vscode.commands.executeCommand('composerCompanion.run')
 		assert.notEqual(cr, undefined, 'Undefined task')
 		return result
-	}).timeout(extraTime);
+	});
 
 	test('run [tree]', async () => {
 		const rootChildren = await extension.treeProvider.getChildren(undefined)
@@ -332,6 +332,6 @@ suite('Commands', () => {
 		const cr = await vscode.commands.executeCommand('composerCompanion.run', children[0])
 		assert.notEqual(cr, undefined, 'Undefined task')
 		return result
-	}).timeout(extraTime);
+	});
 
 });
