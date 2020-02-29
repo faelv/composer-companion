@@ -99,12 +99,16 @@ class ComposerSettings extends vscode.Disposable {
 
   /**
    * @param {vscode.Uri | undefined} resource
+   * @param {boolean} quoting
    * @returns {string}
    */
-  getExecutablePath(resource = undefined) {
+  getExecutablePath(resource = undefined, quoting = false) {
     let exe = this.get(ComposerSettings.SECTION_EXECUTABLE_PATH, null, resource)
     if (typeof exe !== 'string') {
       exe = ComposerSettings.DEFAULT_EXECUTABLE
+    }
+    if (quoting && exe.indexOf(' ') > -1) {
+      exe = `"${exe}"`
     }
     return exe
   }

@@ -149,7 +149,7 @@ class ComposerTaskProvider extends vscode.Disposable {
   /** @returns {string} */
   get executablePath() {
     if (!this._executablePath) {
-      this._executablePath = this.settings.getExecutablePath()
+      this._executablePath = this.settings.getExecutablePath(undefined, true)
     }
     return this._executablePath
   }
@@ -157,7 +157,7 @@ class ComposerTaskProvider extends vscode.Disposable {
   /** @returns {Promise<void>} */
   checkExecutablePath() {
     return new Promise((resolve) => {
-      cp.exec(`"${this.executablePath}" --quiet`, (error) => {
+      cp.exec(`${this.executablePath} --quiet`, (error) => {
         if (error) {
           vscode.window.showErrorMessage(`${strings.EXT_NAME}: ${strings.EXE_PATH_INVALID_MSG}`)
           this.output.appendLine(`${strings.SETTINGS} (${strings.EXE_PATH}): [${strings.INVALID}] ${this.executablePath}`)

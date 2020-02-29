@@ -629,8 +629,8 @@ class ComposerCommands extends vscode.Disposable {
     const pickedFolder = await this.pickWorkspaceFolder()
     if (!pickedFolder) { return }
 
-    const executablePath = ComposerSettings.getInstance().getExecutablePath(pickedFolder.folderUri)
-    const cmd = `"${executablePath}" show -d "${pickedFolder.folderUri.fsPath}"`
+    const executablePath = ComposerSettings.getInstance().getExecutablePath(pickedFolder.folderUri, true)
+    const cmd = `${executablePath} show -d "${pickedFolder.folderUri.fsPath}"`
     const out = await vscode.window.withProgress(
       {location: vscode.ProgressLocation.Window, title: strings.FETCHING_PACKAGES},
       () => {
@@ -666,8 +666,8 @@ class ComposerCommands extends vscode.Disposable {
     const pickedFolder = await this.pickWorkspaceFolder()
     if (!pickedFolder) { return }
 
-    const executablePath = ComposerSettings.getInstance().getExecutablePath(pickedFolder.folderUri)
-    const cmd = `"${executablePath}" exec --list -d "${pickedFolder.folderUri.fsPath}"`
+    const executablePath = ComposerSettings.getInstance().getExecutablePath(pickedFolder.folderUri, true)
+    const cmd = `${executablePath} exec --list -d "${pickedFolder.folderUri.fsPath}"`
     const out = await vscode.window.withProgress(
       {location: vscode.ProgressLocation.Window, title: strings.FETCHING_BINARIES},
       () => {
