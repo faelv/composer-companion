@@ -37,6 +37,20 @@ Validates and offer hints about the _**composer.json**_ file structure.
 - **Composer**, version 1.9.0 or higher recommended (https://getcomposer.org/download/)
 - **PHP**, version 5.3.2 or higher
 
+## For Windows users
+
+Using `composer.bat` instead of `composer.phar` is recommended.
+
+If you don't have a `composer.bat` file you can create one in the same folder as `composer.phar`. Copy and paste the following content, then save:
+
+```
+@echo OFF
+setlocal DISABLEDELAYEDEXPANSION
+"php.exe" "%~dp0composer.phar" %*
+```
+
+(you may need to adjust the `php.exe` location).
+
 ## Extension Settings
 
 This extension contributes the following settings:
