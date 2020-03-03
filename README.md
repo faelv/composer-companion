@@ -37,20 +37,6 @@ Validates and offer hints about the _**composer.json**_ file structure.
 - **Composer**, version 1.9.0 or higher recommended (https://getcomposer.org/download/)
 - **PHP**, version 5.3.2 or higher
 
-## For Windows users
-
-Using `composer.bat` instead of `composer.phar` is recommended.
-
-If you don't have a `composer.bat` file you can create one in the same folder as `composer.phar`. Copy and paste the following content, then save:
-
-```
-@echo OFF
-setlocal DISABLEDELAYEDEXPANSION
-"php.exe" "%~dp0composer.phar" %*
-```
-
-(you may need to adjust the `php.exe` location).
-
 ## Extension Settings
 
 This extension contributes the following settings:
@@ -58,6 +44,27 @@ This extension contributes the following settings:
 * `composerCompanion.enabled` ( <span style="color: blue;">**true**</span> | <span style="color: blue;">false</span> ): If Composer Companion is enabled or not. It can be used in _user_, _workspace_ and _folder_ settings.
 * `composerCompanion.executablePath` ( <span style="color: blue;">string </span>): Path to the composer executable. It can be used in _user_ and _workspace_ settings; if not specified the extension will try to pick it automatically, otherwise you'll see a warning.
 * `composerCompanion.showScriptsInExplorer` ( <span style="color: blue;">**true**</span> | <span style="color: blue;">false</span> ): If Composer Companion should add a scripts view to the Explorer container. It's only available in the _user_ settings.
+
+## Troubleshooting
+
+### - You see an _"Open With"_ dialog in Windows:
+
+In this case, using `composer.bat` instead of `composer.phar` is recommended.
+
+If you don't have a `composer.bat` file you can create one in the same folder as `composer.phar`. Copy and paste the following content, then save:
+
+```cmd
+@echo OFF
+setlocal DISABLEDELAYEDEXPANSION
+"php.exe" "%~dp0composer.phar" %*
+```
+
+You may need to adjust the `php.exe` location.
+
+### - You see an _invalid executable path_ warning:
+
+This means the extension didn't found Composer. Either provide the complete path in settings (`composerCompanion.executablePath`) or add it to your PATH
+environment variable. Also check if composer and PHP are both actually installed and your `php.validate.executablePath` setting is correct.
 
 ## Support
 
