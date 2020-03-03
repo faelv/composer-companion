@@ -6,6 +6,11 @@ All changes to the **Composer Companion** extension will be documented in this f
 _Upcoming changes:_
 #### _(none)_
 
+## [0.2.3]
+_Released on 2020-03-03, includes only bug fixes_:
+#### Fixed
+- Problems when using composer.phar in Windows
+
 ## [0.2.2]
 _Released on 2020-02-29, includes only bug fixes_:
 #### Fixed
