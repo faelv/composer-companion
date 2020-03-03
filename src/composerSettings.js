@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const fs = require('fs');
 const strings = require('./composerStrings');
 const { ComposerOutput } = require('./composerOutput');
 
@@ -76,6 +77,17 @@ class ComposerSettings extends vscode.Disposable {
   }
 
   /**
+   * @param {string} filePath
+   * @returns {string}
+   */
+  quoteFilePath(filePath) {
+    if (filePath.indexOf(' ') > -1) {
+      return `"${filePath}"`
+    }
+    return filePath
+  }
+
+  /**
    * @param {string} name
    * @param {any} defaultValue
    * @param {vscode.Uri | undefined} resource
@@ -107,8 +119,23 @@ class ComposerSettings extends vscode.Disposable {
     if (typeof exe !== 'string') {
       exe = ComposerSettings.DEFAULT_EXECUTABLE
     }
-    if (quoting && exe.indexOf(' ') > -1) {
-      exe = `"${exe}"`
+
+    if (process.platform === 'win32' && exe.endsWith('.phar')) {
+
+      const batExe = exe.replace(/\.phar$/, '.bat')
+      if (batExe.indexOf('\\') > -1 && fs.existsSync(batExe)) {
+        exe = batExe
+      } else {
+        let phpExe = vscode.workspace.getConfiguration('php', resource).get('validate.executablePath')
+        phpExe = this.quoteFilePath(phpExe ? phpExe : 'php.exe')
+        exe = this.quoteFilePath(exe)
+        return `${phpExe} ${exe}`
+      }
+
+    }
+
+    if (quoting) {
+      exe = this.quoteFilePath(exe)
     }
     return exe
   }
