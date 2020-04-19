@@ -280,7 +280,7 @@ suite('Commands', () => {
 		})
 
 		const taskDisp = vscode.tasks.onDidEndTask((event) => {
-			if (event.execution.task.name === 'test' && event.execution.task.definition.type === 'composer') {
+			if (event.execution.task.name === 'test') {
 				taskDisp.dispose()
         resultResolve()
       }
@@ -298,7 +298,7 @@ suite('Commands', () => {
 		})
 
 		const taskDisp = vscode.tasks.onDidEndTask((event) => {
-			if (event.execution.task.name === 'test' && event.execution.task.definition.type === 'composer') {
+			if (event.execution.task.name === 'test') {
 				taskDisp.dispose()
         resultResolve()
       }
@@ -323,7 +323,7 @@ suite('Commands', () => {
 		})
 
 		const taskDisp = vscode.tasks.onDidEndTask((event) => {
-			if (event.execution.task.name === 'test' && event.execution.task.definition.type === 'composer') {
+			if (event.execution.task.name === 'test') {
 				taskDisp.dispose()
         resultResolve()
       }
