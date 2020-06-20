@@ -6,6 +6,13 @@ All changes to the **Composer Companion** extension will be documented in this f
 _Upcoming changes:_
 #### _(none)_
 
+## [0.2.4]
+_Release on 2020-06-20, includes bug fixes and new features_:
+#### Added
+- An activity bar icon
+#### Fixed
+- An error popup when executing tasks
+
 ## [0.2.3]
 _Released on 2020-03-03, includes only bug fixes_:
 #### Fixed
