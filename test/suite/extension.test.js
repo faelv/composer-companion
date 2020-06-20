@@ -219,7 +219,7 @@ suite('Commands', () => {
 		})
 
 		const taskDisp = vscode.tasks.onDidEndTask((event) => {
-			if (event.execution.task.name === 'install' && event.execution.task.definition.type === 'composer') {
+			if (event.execution.task.name === 'install' && event.execution.task.source === 'composer') {
 				taskDisp.dispose()
 				assert.ok(fs.existsSync(path.join(testDir, 'vendor', 'autoload.php')), 'Missing autoload.php')
         resultResolve()
@@ -241,7 +241,7 @@ suite('Commands', () => {
 		})
 
 		const taskDisp = vscode.tasks.onDidEndTask((event) => {
-			if (event.execution.task.name === 'update' && event.execution.task.definition.type === 'composer') {
+			if (event.execution.task.name === 'update' && event.execution.task.source === 'composer') {
 				taskDisp.dispose()
 				assert.ok(fs.existsSync(path.join(testDir, 'vendor', 'autoload.php')), 'Missing autoload.php')
         resultResolve()
@@ -262,7 +262,7 @@ suite('Commands', () => {
 		})
 
 		const taskDisp = vscode.tasks.onDidEndTask((event) => {
-			if (event.execution.task.name === 'exec' && event.execution.task.definition.type === 'composer') {
+			if (event.execution.task.name === 'exec' && event.execution.task.source === 'composer') {
 				taskDisp.dispose()
 
         resultResolve()
