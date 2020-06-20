@@ -47,7 +47,7 @@ class ComposerCommandTask extends ComposerBaseTask {
       )
     }
 
-    super({type: ComposerTaskDefinition.TASK_TYPE}, scope, command, ComposerTaskDefinition.TASK_TYPE, shellExec)
+    super({type: ComposerTaskDefinition.TASK_TYPE}, scope, command, ComposerTaskDefinition.TASK_SOURCE, shellExec)
 
     this.presentationOptions = {
       focus
@@ -707,7 +707,7 @@ class ComposerCommands extends vscode.Disposable {
       {type: ComposerTaskDefinition.TASK_TYPE},
       pickedFolder.wsFolder,
       'exec',
-      ComposerTaskDefinition.TASK_TYPE,
+      ComposerTaskDefinition.TASK_SOURCE,
       new vscode.ShellExecution(
         {
           value: path.join(pickedFolder.folderUri.fsPath, 'vendor', 'bin', selected),

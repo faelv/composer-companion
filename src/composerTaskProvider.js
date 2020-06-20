@@ -10,7 +10,8 @@ const { ComposerOutput } = require('./composerOutput');
  */
 class ComposerTaskDefinition {
 
-  static TASK_TYPE = 'composer'
+  static TASK_TYPE = 'shell'
+  static TASK_SOURCE = 'composer'
 
   /** @type {string} */
   script
@@ -69,7 +70,7 @@ class ComposerTask extends ComposerBaseTask {
       definition || new ComposerTaskDefinition(script),
       scope,
       script,
-      ComposerTaskDefinition.TASK_TYPE,
+      ComposerTaskDefinition.TASK_SOURCE,
       new vscode.ShellExecution(
         {value: executable, quoting: vscode.ShellQuoting.Weak},
         [
@@ -131,7 +132,7 @@ class ComposerTaskProvider extends vscode.Disposable {
     this.output = ComposerOutput.getInstance()
     this.settings = ComposerSettings.getInstance()
     this.workspaceFolders = ComposerWorkspaceFolders.getInstance()
-    this.registerDisp = vscode.tasks.registerTaskProvider(ComposerTaskDefinition.TASK_TYPE, this)
+    this.registerDisp = vscode.tasks.registerTaskProvider(ComposerTaskDefinition.TASK_SOURCE, this)
 
     this.settings.addOnChangeListener('taskProvider', (affects) => {
       if (affects(ComposerSettings.SECTION_EXECUTABLE_PATH)) {
