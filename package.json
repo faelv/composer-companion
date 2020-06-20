@@ -177,7 +177,9 @@
 				{
 					"id": "composerScriptsView",
 					"name": "Composer Scripts",
-					"when": "composerCompanion.showScriptsInExplorer"
+					"contextualTitle": "Composer Scripts",
+					"when": "composerCompanion.showScriptsInExplorer",
+					"icon": "resources/activity.svg"
 				}
 			]
 		},
