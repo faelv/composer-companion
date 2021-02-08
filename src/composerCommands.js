@@ -334,7 +334,7 @@ class ComposerCommands extends vscode.Disposable {
    * @returns {string[] | false}
    */
   async inputPackages(prompt) {
-    const reg = /[^-\s]+\/\S+/g
+    const reg = /\S+\/\S+/g
 
     const input = await vscode.window.showInputBox({
       prompt,
