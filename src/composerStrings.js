@@ -22,6 +22,8 @@ class ComposerFlags {
     this.set("--no-dev", "Skip installing packages listed in require-dev", ['update', 'install', 'create-project'], -70)
     this.set("--interactive", "Interactive interface to select the packages to update (alias: -i)", ['update'], -60)
 
+    this.set("--2", "Updates to 2.x channel", ['self-update'], -50)
+
     this.set("--all", "List all packages available in all your repositories", ['show'])
     this.set("--apcu", "Use APCu to cache found/not-found classes", ['dump-autoload'])
     this.set("--apcu-autoloader", "Use APCu to cache found/not-found classes", ['require', 'update', 'install', 'remove'])
@@ -62,7 +64,7 @@ class ComposerFlags {
     this.set("--preview", "Force an update to the preview channel", ['self-update'])
     this.set("--recursive", "Recursively resolves up to the root package", ['depends', 'prohibits'])
     this.set("--remove-vcs", "Whether to force deletion of the vcs folder without prompting", ['create-project'])
-    this.set("--rollback", "Revert to an older installation of composer", ['self-update'])
+    this.set("--rollback", "Revert to an older installation of composer", ['self-update'], -50)
     this.set("--root-reqs", "Restricts the update to your first degree dependencies", ['update'])
     this.set("--self", "List the root package info", ['show'])
     this.set("--set-channel-only", "Only store the channel as the default one and then exit", ['self-update'])
