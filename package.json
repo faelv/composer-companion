@@ -1,7 +1,7 @@
 {
 	"name": "composer-companion",
 	"displayName": "Composer Companion",
-	"description": "Companion extension for Composer, a dependency manager for PHP with easy access to scripts, tasks and common commands",
+	"description": "Companion extension for Composer (a dependency manager for PHP) with easy access to scripts, tasks and common commands",
 	"publisher": "faelv",
 	"version": "0.2.4",
 	"license": "SEE LICENSE IN LICENSE FILE",
