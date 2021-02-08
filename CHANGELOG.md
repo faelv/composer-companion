@@ -6,6 +6,13 @@ All changes to the **Composer Companion** extension will be documented in this f
 _Upcoming changes:_
 #### _(none)_
 
+## [0.2.5]
+_Released on 2021-02-08, includes bug fixes and new features_:
+#### Added
+- New args to the self-update command
+#### Fixed
+- A bug when requiring packages with hyphen in their names
+
 ## [0.2.4]
 _Release on 2020-06-20, includes bug fixes and new features_:
 #### Added
