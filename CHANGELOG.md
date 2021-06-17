@@ -4,6 +4,10 @@ All changes to the **Composer Companion** extension will be documented in this f
 
 ## [Unreleased]
 _Upcoming changes:_
+#### _(none)_
+
+## [0.2.6]
+_Released on 2021-06-17, includes only bug fixes_:
 #### Fixed
 - JSON Schema URL
 
