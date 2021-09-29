@@ -3,7 +3,6 @@
 [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/faelv.composer-companion?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=faelv.composer-companion)
 ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/faelv.composer-companion?style=flat-square)
 [![GitHub issues](https://img.shields.io/github/issues/faelv/composer-companion?style=flat-square)](https://github.com/faelv/composer-companion/issues)
-[![Travis (.com) branch](https://img.shields.io/travis/com/faelv/composer-companion/master?style=flat-square)](https://travis-ci.com/faelv/composer-companion)
 
 This is a companion extension for [**Composer**](https://getcomposer.org/), a dependency manager for PHP. Check out it's features below.
 
